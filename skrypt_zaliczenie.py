@@ -78,34 +78,20 @@ arcpy.management.Merge([erase_budynki, budynki_m_buffer_disolve], merge_budynki_
 budynki_m_raster = "budynki_m_raster.tif"
 arcpy.PolygonToRaster_conversion(merge_budynki_obszar, "Value", budynki_m_raster)
 
-# Raster Calculator - mnożenie rastrów
-wynikowy_raster = "wynikowy_raster.tif"
-# #final_raster = Raster(ujecia_raster) * Raster(budynki_m_raster) * Raster(nachylenia_dem) * Raster(ppwg_raster)
-# final_raster = arcpy.ia.RasterCalculator(
-#     expression='r1 * r2 * r3 * r4',
-#     rasters=[ujecia_raster, budynki_m_raster, nachylenia_dem, ppwg_raster],
-#     input_names=["r1", "r2", "r3", "r4"]
-# )
-# final_raster.save(wynikowy_raster)
-
-
+# Sumowanie wszystkich rastrów
+suma_raster = "suma_raster.tif"
 raster1 = arcpy.Raster(ujecia_raster)
 raster2 = arcpy.Raster(budynki_m_raster)
 raster3 = arcpy.Raster(nachylenia_dem)
 raster4 = arcpy.Raster(ppwg_raster)
 
-# Perform Raster Calculation with proper arguments
 final_raster = RasterCalculator(
-    expression="r1 * r2 * r3 * r4",  # Use variable names in the expression
-    rasters=[raster1, raster2, raster3, raster4],  # List of raster objects
-    input_names=["r1", "r2", "r3", "r4"]  # Names matching the expression
+    expression="r1 + r2 + r3 + r4",  
+    rasters=[raster1, raster2, raster3, raster4],  
+    input_names=["r1", "r2", "r3", "r4"]  
 )
-final_raster.save(wynikowy_raster)
-
-# with arcpy.EnvManager(scratchWorkspace=r"D:\Studia\rok_3\Programowanie_arcpy\projekt\Dane_testowe_main\Default.gdb"):
-#     output_raster = arcpy.ia.RasterCalculator(
-#         expression=' "ujecia_raster.tif" * "budynki_m_raster.tif" * "nachylenia.tif" * "ppwg_raster.tif"'
-#     )
-#     output_raster.save(r"D:\Studia\rok_3\Programowanie_arcpy\projekt\Dane_testowe_main\Default.gdb\RasterC_1")
+final_raster.save(suma_raster)
+wynik_raster = Reclassify(suma_raster, "Value", RemapRange([[0, 3, 0], [3, 4, 1]]))
+wynik_raster.save("raster_wynikowy.tif")
 
 print("Proces zakończony pomyślnie!")
