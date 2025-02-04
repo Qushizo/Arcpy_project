@@ -1,0 +1,17 @@
+Dem10
+PPW
+ujęcia
+granica miasta
+zabudowa
+
+slope -> reklasyfikacja -> clip do granica miasta
+ppw -> generowanie kolumny (wartości 0 i 1) -> poligon to raster
+ujęcia -> buffer -> disolve -> union z granicą -> pola 0,1 -> poligon to raster
+zabudowa -> wybranie budynków mieszkalnych -> nowa warstwa -> buffer -> disolve -> union z granicą -> poligon to raster
+raster calculator slope*ppw*ujęcia*zabudowa -> raster wynikowy
+
+napisz skrypt w języku python z wykorzystaniem arcpy który oblicza slope na podstaweie dem robi reklasyfikacje gdzie wartości do 3 stopni mają wartoś 1 a więcej
+do warstwy shp dodaje kolumnę do tabeli gdzie z kolumny opis gdzie są wartości podmokłe, suche, wilgotne, dla wartości suche w nowej kolumnie przypisuje wartość 1 a dla pozostałych 1
+z 2 warstwy shp tworzy buffer 50m na nowej warstwie robi disolve dodaje kolumnę i uzubełnia wartości 0, do warstyw granica miasta shp dodaje kolumnę która ma wartość 1 potem union poligon to raster
+z warstwy shp zawierającej budynki z kolumny X_KOD szuka wartości BUBD01, BUBD02, BUBD03, BUBD04, BUBD11. tworzy nową warstę na postawie których tworzy bufor, robi disolve dodaje kolumnę uzupełnia wartością 0 potem union z granica miasta i poligon to raster
+raster calculator nowo powstałych rastrów po przez mnożenie i utworzenie wynikowego rastra
