@@ -45,9 +45,7 @@ arcpy.CalculateField_management(obszar_prac, "Value", 1)
 obszar_prac_raster = "obszar_prac.tif"
 arcpy.PolygonToRaster_conversion(obszar_prac, "Value", obszar_prac_raster)
 
-# Union warstw i konwersja na raster
-#union_ujecia_obszar = "union_ujecia_obszar.shp"
-#arcpy.Union_analysis([obszar_prac, ujecia_buffer_dissolve], union_ujecia_obszar)
+# Erase warstwy obszary z ujęcia i merge
 erase_ujecia = "obszar_prac_ujecia_erased.shp"
 arcpy.Erase_analysis(obszar_prac, ujecia_buffer_dissolve, erase_ujecia)
 merge_ujecia_obszar = "merge_ujecia_obszar.shp"
@@ -68,9 +66,7 @@ arcpy.Dissolve_management(budynki_m_buffer, budynki_m_buffer_disolve)
 check_and_add_field(budynki_m_buffer_disolve, "Value", "SHORT")
 arcpy.CalculateField_management(budynki_m_buffer_disolve, "Value", 0)
 
-# Union z granicą miasta i konwersja do rastra
-#union_budynki_obszar = "union_budynki_obszar.shp"
-#arcpy.Union_analysis([obszar_prac, budynki_m_buffer_disolve], union_budynki_obszar)
+# Erase warstwy obszary z budynki i merge
 erase_budynki = "obszar_prac_budynki_erased.shp"
 arcpy.Erase_analysis(obszar_prac, budynki_m_buffer_disolve, erase_budynki)
 merge_budynki_obszar = "merge_budynki_obszar.shp"
@@ -78,7 +74,7 @@ arcpy.management.Merge([erase_budynki, budynki_m_buffer_disolve], merge_budynki_
 budynki_m_raster = "budynki_m_raster.tif"
 arcpy.PolygonToRaster_conversion(merge_budynki_obszar, "Value", budynki_m_raster)
 
-# Sumowanie wszystkich rastrów
+# Sumowanie wszystkich rastrów i reclassifyikacja
 suma_raster = "suma_raster.tif"
 raster1 = arcpy.Raster(ujecia_raster)
 raster2 = arcpy.Raster(budynki_m_raster)
